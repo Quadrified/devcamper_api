@@ -4,11 +4,14 @@ const morgan = require('morgan');
 const connectDB = require('./config/db');
 const colors = require('colors');
 
-// Load env vars
+// Load env variables
 dotenv.config({ path: './config/config.env' });
 
 // Initialize Express App
 const app = express();
+
+// Body Parser
+app.use(express.json());
 
 // Dev logging middleware
 if (process.env.NODE_ENV === 'development') {

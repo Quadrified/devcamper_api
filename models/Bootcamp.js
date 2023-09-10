@@ -102,7 +102,7 @@ const BootcampSchema = new mongoose.Schema(
     user: {
       type: mongoose.Schema.ObjectId,
       ref: 'User',
-      required: true,
+      required: false, //TODO: Make it true
     },
   },
   {
@@ -111,4 +111,4 @@ const BootcampSchema = new mongoose.Schema(
   }
 );
 
-module.exports = mongoose.Model('Bootcamp', BootcampSchema);
+module.exports = mongoose.model('Bootcamp', BootcampSchema);
