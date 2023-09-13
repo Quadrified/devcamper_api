@@ -113,6 +113,9 @@ const BootcampSchema = new mongoose.Schema(
   }
 );
 
+// * pre - runs the middleware before user 'posts' or 'saves' or 'hits' the API to save to DB
+// * pre - runs the middleware after user 'posts' or 'saves' or 'hits' the API to save to DB
+
 // Create Bootcamp slug from the name
 BootcampSchema.pre('save', function (next) {
   this.slug = slugify(this.name, { lower: true });
@@ -133,7 +136,7 @@ BootcampSchema.pre('save', async function (next) {
     zipcode: location[0].zipcode,
   };
 
-  // Do Not Save Address in DB
+  // !Do Not Save Address in DB because we already "pre" inserting "formattedAddress"
   this.address = undefined;
   next();
 });

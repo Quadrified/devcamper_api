@@ -1,6 +1,7 @@
 # Devcamper API
----
-## Steps to create and connect MongoDB:
+<hr />
+
+### Steps to create and connect MongoDB:
 - Log in to MongoDB
 - Click Database > Create a cluster > Shared Cluster
 - After creating cluster
@@ -15,7 +16,23 @@
   - Paste Connection String in Compass > Save and Connect
 - Install mongoose
   - Connect via ```db.js```
-```Note: From the Mongoose 6.0 onwards: useNewUrlParser, useUnifiedTopology, useFindAndModify, and useCreateIndex are no longer supported options. Mongoose 6 always behaves as if useNewUrlParser, useUnifiedTopology, and useCreateIndex are true, and useFindAndModify is false. Please remove these options from your code.```
 
-## Add colors to console
+`Note: From the Mongoose 6.0 onwards: useNewUrlParser, useUnifiedTopology, useFindAndModify, and useCreateIndex are no longer supported options. Mongoose 6 always behaves as if useNewUrlParser, useUnifiedTopology, and useCreateIndex are true, and useFindAndModify is false. Please remove these options from your code.`
+
+<hr />
+
+### Add colors to console
 - Install ```colors.js``` and configure on ```server.js```
+
+<hr />
+
+### Add Geocoder API
+- Go to [Geocoder](https://developer.mapquest.com/user/me/profile)
+- Create a new account
+- Got to Edit Keys
+- Select "My Application" > copy "Consumer Key"
+- Add to env file 
+  - GEOCODER_PROVIDER=mapquest
+  - GEOCODER_API_KEY=<Copied Consumer Key>
+- Create `geocoder` utility file 
+- Import `geocoder` in Models and use 
