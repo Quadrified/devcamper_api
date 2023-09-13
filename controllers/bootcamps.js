@@ -1,3 +1,4 @@
+const ErrorResponse = require('../utils/errorResponse');
 const Bootcamp = require('../models/Bootcamp');
 
 // @desc    Get all bootcamps
@@ -24,8 +25,10 @@ exports.getBootcamp = async (req, res, next) => {
     const bootcamp = await Bootcamp.findById(req.params.id);
 
     if (!bootcamp) {
-      // "return"-ing because we have another "res.send()" after this block
-      return res.status(400).json({ success: false });
+      // *"return"-ing because we have another "res.send()" after this block
+      return next(
+        new ErrorResponse(`Bootcamp not found with id of ${req.params.id}`, 404)
+      );
     }
 
     res.status(200).json({
@@ -33,8 +36,10 @@ exports.getBootcamp = async (req, res, next) => {
       data: bootcamp,
     });
   } catch (error) {
-    // res.status(400).json({ success: false });
-    next(error);
+    // * We decide the status code and message using custom ErrorResponse class; then pass it on to error.js
+    next(
+      new ErrorResponse(`Bootcamp not found with id of ${req.params.id}`, 404)
+    );
   }
 };
 
