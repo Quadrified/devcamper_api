@@ -22,7 +22,6 @@ const bootcamps = JSON.parse(
 const importData = async () => {
   try {
     await Bootcamp.create(bootcamps);
-
     console.log('Data imported...'.green.inverse);
     process.exit();
   } catch (error) {
