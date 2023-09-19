@@ -8,15 +8,16 @@ const Bootcamp = require('../models/Bootcamp');
 // @access  Public
 exports.getBootcamps = asyncHandler(async (req, res, next) => {
   // Example of query params => /api/v1/bootcamps?location.state=MA&housing=true
-  // First Query param starts with ? followed by all rest as &
+  // First Query param starts with "?" followed by all rest as "&"
+  // URL Params start with "/" and are used to identify resource
 
   let query;
 
   // Copy req.query
   const reqQuery = { ...req.query };
 
-  // Fields to exclude in filtering
-  const removeFields = ['select', 'sort'];
+  // Fields to exclude in FILTERING
+  const removeFields = ['select', 'sort', 'page', 'limit'];
 
   // Loop over removeFields and delete them from reqQuery
   removeFields.forEach((param) => delete reqQuery[param]);
@@ -24,7 +25,7 @@ exports.getBootcamps = asyncHandler(async (req, res, next) => {
   // Create query string
   let queryStr = JSON.stringify(reqQuery); // stringify because reqQuery is of type "object"
 
-  // Create operators ($gt, $gte, etc.)
+  // Create FILTER operators ($gt, $gte, etc.)
   queryStr = queryStr.replace(
     /\b(gt|gte|lt|lte|in)\b/g,
     (match) => `$${match}`
@@ -33,13 +34,13 @@ exports.getBootcamps = asyncHandler(async (req, res, next) => {
   // Finding resource
   query = Bootcamp.find(JSON.parse(queryStr));
 
-  // Select Fields
+  // SELECT Fields
   if (req.query.select) {
     const fields = req.query.select.split(',').join(' ');
     query = query.select(fields);
   }
 
-  // Sort
+  // SORT fields
   if (req.query.sort) {
     const sortBy = req.query.sort.split(',').join(' ');
     query = query.sort(sortBy);
@@ -47,12 +48,41 @@ exports.getBootcamps = asyncHandler(async (req, res, next) => {
     query = query.sort('-createdAt');
   }
 
+  // PAGINATE fields
+  const page = parseInt(req.query.page, 10) || 1;
+  const limit = parseInt(req.query.limit, 10) || 25;
+  const startIndex = (page - 1) * limit; // Start of douments
+  const endIndex = page * limit; // End of documents
+  const totalDocuments = await Bootcamp.countDocuments(); // Mongoose Model Method to get all documents
+
+  query = query.skip(startIndex).limit(limit);
+
   // Executing query
   const bootcamps = await query;
+
+  // Pagination result
+  const pagination = {};
+
+  // If we do not have a previous page, dont show previous page
+  if (endIndex < totalDocuments) {
+    pagination.next = {
+      page: page + 1,
+      limit,
+    };
+  }
+
+  // If we do not have a last page, dont show last page
+  if (startIndex > 0) {
+    pagination.prev = {
+      page: page - 1,
+      limit,
+    };
+  }
 
   res.status(200).json({
     success: true,
     count: bootcamps.length,
+    pagination,
     data: bootcamps,
   });
 });

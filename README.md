@@ -36,3 +36,13 @@
   - GEOCODER_API_KEY=<Copied Consumer Key>
 - Create `geocoder` utility file 
 - Import `geocoder` in Models and use 
+
+<hr />
+
+### API variations
+- Get `bootcamps` data can have
+  - select
+  - filter
+  - sort
+  - paginate
+  - limits
