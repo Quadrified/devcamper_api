@@ -8,8 +8,8 @@ const Bootcamp = require('../models/Bootcamp');
 // @access  Public
 exports.getBootcamps = asyncHandler(async (req, res, next) => {
   // Example of query params => /api/v1/bootcamps?location.state=MA&housing=true
-  // First Query param starts with "?" followed by all rest as "&"
-  // URL Params start with "/" and are used to identify resource
+  // First "Query" param starts with "?" followed by all rest as "&"
+  // URL "Params" start with "/" and are used to identify resource
 
   let query;
 
