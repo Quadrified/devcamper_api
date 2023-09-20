@@ -14,7 +14,7 @@ exports.getCourses = asyncHandler(async (req, res, next) => {
   } else {
     // Populating other (Model/Document/Table)'s data in Courses
     query = Course.find().populate({
-      path: 'bootcamp',
+      path: 'bootcamp', // From CourseSchema
       select: 'name description',
     });
   }
