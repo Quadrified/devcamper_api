@@ -101,13 +101,9 @@ const BootcampSchema = new mongoose.Schema(
       type: Date,
       default: Date.now,
     },
-    user: {
-      type: mongoose.Schema.ObjectId,
-      ref: 'User',
-      required: false, //TODO: Make it true
-    },
   },
   {
+    // Setting up Virtuals for Courses
     toJSON: { virtuals: true },
     toObject: { virtuals: true },
   }
@@ -139,6 +135,25 @@ BootcampSchema.pre('save', async function (next) {
   // !Do Not Save Address in DB because we already "pre" inserting "formattedAddress"
   this.address = undefined;
   next();
+});
+
+// Cascade Delete Courses when a Bootcamp is Deleted
+BootcampSchema.pre(
+  'deleteOne',
+  { document: true, query: false },
+  async function (next) {
+    console.log(`Courses being removed from bootcamp ${this._id}`);
+    await this.model('Course').deleteMany({ bootcamp: this._id });
+    next();
+  }
+);
+
+// Reverse Populate wit Virtuals from Bootcamp docs/table to Course
+BootcampSchema.virtual('courses', {
+  ref: 'Course', // Model name
+  localField: '_id',
+  foreignField: 'bootcamp',
+  justOne: false,
 });
 
 module.exports = mongoose.model('Bootcamp', BootcampSchema);

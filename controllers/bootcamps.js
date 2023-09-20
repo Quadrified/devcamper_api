@@ -32,7 +32,8 @@ exports.getBootcamps = asyncHandler(async (req, res, next) => {
   );
 
   // Finding resource
-  query = Bootcamp.find(JSON.parse(queryStr));
+  // Populating all Courses in Bootcamps
+  query = Bootcamp.find(JSON.parse(queryStr)).populate('courses');
 
   // SELECT Fields
   if (req.query.select) {
@@ -144,7 +145,7 @@ exports.updateBootcamp = asyncHandler(async (req, res, next) => {
 // @route   DELTE /api/v1/bootcamps/:id
 // @access  Private
 exports.deleteBootcamp = asyncHandler(async (req, res, next) => {
-  const bootcamp = await Bootcamp.findByIdAndDelete(req.params.id);
+  const bootcamp = await Bootcamp.findById(req.params.id);
 
   if (!bootcamp) {
     // "return"-ing because we have another "res.send()" after this block
@@ -152,6 +153,10 @@ exports.deleteBootcamp = asyncHandler(async (req, res, next) => {
       new ErrorResponse(`Bootcamp not found with id of ${req.params.id}`, 404)
     );
   }
+
+  // Redirects to BootcampSchema.pre('deleteOne') middleware
+  // Cascade deleting all courses when Bootcamp is deleted
+  bootcamp.deleteOne();
 
   res.status(200).json({
     success: true,
